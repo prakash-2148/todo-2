@@ -39,5 +39,6 @@ jobs:
       # Apply Kubernetes manifests
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -f Kubernetes/deployment.yaml
-          kubectl apply -f Kubernetes/service.yaml
+          cd Kubernetes && kubectl apply -f deployment.yaml
+          cd Kubernetes && kubectl apply -f service.yaml
+
