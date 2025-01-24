@@ -49,12 +49,13 @@ jobs:
 
       # Authenticate with Kubernetes cluster
       - name: Set Kubernetes Context
+        env:
+          KUBECONFIG: kubeconfig
         run: |
-          echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig
-          export KUBECONFIG=kubeconfig
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > kubeconfig
 
       # Apply Kubernetes manifests
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -f $GITHUB_WORKSPACE/Kubernetes/deployment.yaml
-          kubectl apply -f $GITHUB_WORKSPACE/Kubernetes/service.yaml
+          kubectl apply -f Kubernetes/deployment.yaml
+          kubectl apply -f Kubernetes/service.yaml
