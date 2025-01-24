@@ -30,16 +30,31 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
+      # Checkout the code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Debug: List files to verify directory structure
+      - name: Debug: List Files
+        run: |
+          echo "Current directory structure:"
+          pwd
+          ls -R
+
       # Set up kubectl
       - name: Set up kubectl
         uses: azure/setup-kubectl@v3
         with:
           version: 'latest'
 
+      # Authenticate with Kubernetes cluster
+      - name: Set Kubernetes Context
+        run: |
+          echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig
+          export KUBECONFIG=kubeconfig
+
       # Apply Kubernetes manifests
       - name: Deploy to Kubernetes
         run: |
-          cd Kubernetes
-           kubectl apply -f deployment.yaml
-           kubectl apply -f service.yaml
-
+          kubectl apply -f $GITHUB_WORKSPACE/Kubernetes/deployment.yaml
+          kubectl apply -f $GITHUB_WORKSPACE/Kubernetes/service.yaml
