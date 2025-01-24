@@ -49,10 +49,9 @@ jobs:
 
       # Authenticate with Kubernetes cluster
       - name: Set Kubernetes Context
-        env:
-          KUBECONFIG: kubeconfig
         run: |
           echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > kubeconfig
+          export KUBECONFIG=kubeconfig
 
       # Apply Kubernetes manifests
       - name: Deploy to Kubernetes
