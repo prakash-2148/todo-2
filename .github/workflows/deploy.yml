@@ -34,23 +34,15 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Debug: List files to verify directory structure
-      - name: Debug: List Files
+      # Install kubectl
+      - name: Install kubectl
         run: |
-          echo "Current directory structure:"
-          pwd
-          ls -R
-
-      # Set up kubectl
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: 'latest'
-
-    
+          curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+          chmod +x ./kubectl
+          sudo mv ./kubectl /usr/local/bin/kubectl
 
       # Apply Kubernetes manifests
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -f Kubernetes/deployment.yaml
-          kubectl apply -f Kubernetes/service.yaml
+          cd Kubernetes && kubectl apply -f deployment.yaml
+          cd Kubernetes && kubectl apply -f service.yaml
